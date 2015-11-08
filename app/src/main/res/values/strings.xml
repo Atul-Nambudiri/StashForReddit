@@ -1,0 +1,67 @@
+<resources>
+    <string name="go">Go</string>
+    <string name="cancel">Cancel</string>
+    <string name="app_name">Stash For Reddit</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="subreddits">
+        <item>Front Page</item>
+        <item>Announcements</item>
+        <item>Art</item>
+        <item>AskReddit</item>
+        <item>AskScience</item>
+        <item>AWW</item>
+        <item>Blog</item>
+        <item>Books</item>
+        <item>Creepy</item>
+        <item>DataIsBeautiful</item>
+        <item>DIY</item>
+        <item>Documentaries</item>
+        <item>EarthPorn</item>
+        <item>ExplainLikeImFive</item>
+        <item>Fitness</item>
+        <item>Food</item>
+        <item>Funny</item>
+        <item>Futurology</item>
+        <item>Gadgets</item>
+        <item>Gaming</item>
+        <item>GetMotivated</item>
+        <item>Gifs</item>
+        <item>History</item>
+        <item>IAmA</item>
+        <item>InternetIsBeautiful</item>
+        <item>Jokes</item>
+        <item>LifeProTips</item>
+        <item>ListenToThis</item>
+        <item>MildlyInteresting</item>
+        <item>Movies</item>
+        <item>Music</item>
+        <item>News</item>
+        <item>NoSleep</item>
+        <item>NotTheOnion</item>
+        <item>OldSchoolCool</item>
+        <item>PersonalFinance</item>
+        <item>Philosophy</item>
+        <item>PhotoshopBattles</item>
+        <item>Pics</item>
+        <item>Science</item>
+        <item>Showerthoughts</item>
+        <item>Space</item>
+        <item>Sports</item>
+        <item>Television</item>
+        <item>TIFU</item>
+        <item>TodayILearned</item>
+        <item>TwoXChromosomes</item>
+        <item>UpliftingNews</item>
+        <item>Videos</item>
+        <item>WorldNews</item>
+        <item>WritingPrompts</item>
+    </string-array>
+
+    <string-array name="orders">
+        <item>Hot</item>
+        <item>New</item>
+        <item>Rising</item>
+        <item>Controversial</item>
+        <item>Top</item>
+    </string-array>
+</resources>
