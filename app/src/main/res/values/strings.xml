@@ -64,4 +64,8 @@
         <item>Controversial</item>
         <item>Top</item>
     </string-array>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_post_fragment">Hello post fragment</string>
+    <string name="hello_link_fragment">Hello link fragment</string>
 </resources>

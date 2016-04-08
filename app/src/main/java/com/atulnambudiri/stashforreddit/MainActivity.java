@@ -2,17 +2,18 @@ package com.atulnambudiri.stashforreddit;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.NavUtils;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,6 +22,7 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
     Toolbar toolbar;
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
     ListView drawerList;
     ActionBarDrawerToggle toggle;
     SubredditFragment frag;
+    LinkFragment lFrag;
+    PostFragment pFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,17 +43,9 @@ public class MainActivity extends AppCompatActivity {
         frag = new SubredditFragment();
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, frag)
+                    .add(R.id.container, frag, "main")
                     .commit();
         }
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "To be replaced with different action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
     }
 
     @Override
@@ -65,24 +61,60 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch(id) {
+            case R.id.action_settings:
+                return true;
+            case R.id.action_choose:
+                new ChooseSubredditDialog().show(getSupportFragmentManager(), "Choose Subreddit Dialog");
+            case R.id.action_order:
+                new ChooseOrderDialog().show(getSupportFragmentManager(), "Choose Order Dialog");
+            case android.R.id.home:
+                Toast.makeText(getApplication(), "Back", Toast.LENGTH_LONG).show();
+                onBackPressed();
+            default:
+                onBackPressed();
         }
-        else if(id == R.id.action_choose) {
-            new ChooseSubredditDialog().show(getSupportFragmentManager(), "Choose Subreddit Dialog");
-        }
-        else if(id == R.id.action_order) {
-            new ChooseOrderDialog().show(getSupportFragmentManager(), "Choose Order Dialog");
-        }
-
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Opens up a new post as a detail fragment
+     * @param domain The domain of the post, ie i.imgur, or self.reddit
+     * @param url The URL to Open
+     */
+    public void openPost(String domain, String url) {
+        Bundle args = new Bundle();
+        args.putString("url", url);
+        Log.v("Domain", domain);
+        Log.v("URL", url);
+        toggle.setDrawerIndicatorEnabled(false);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if(domain.substring(0, 5).equals("self.")) {
+            pFrag = new PostFragment();
+            pFrag.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, pFrag, "main").addToBackStack(null)
+                    .commit();
+        }
+        else{
+            lFrag = new LinkFragment();
+            lFrag.setArguments(args);
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.container, lFrag, "main").addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    public void onBackPressed()
+    {
+        FragmentManager f = this.getSupportFragmentManager();
+        f.popBackStack();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        toggle.setDrawerIndicatorEnabled(true);
+
+    }
+
     public void setupDrawer() {
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Front Page");
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerList = (ListView) findViewById(R.id.drawer);

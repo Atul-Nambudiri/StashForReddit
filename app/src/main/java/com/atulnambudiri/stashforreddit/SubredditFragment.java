@@ -3,6 +3,7 @@ package com.atulnambudiri.stashforreddit;
 import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
@@ -30,8 +31,7 @@ import java.util.ArrayList;
  */
 public class SubredditFragment extends Fragment {
     private RecyclerView myRecyclerView;
-    private RecyclerView.Adapter myAdapter;
-    private final RecyclerView.LayoutManager myLayoutManager = new LinearLayoutManager(this.getActivity());
+    private CardViewAdapter myAdapter;
     private SwipeRefreshLayout refresh;
 
     private boolean loading = false;
@@ -61,12 +61,14 @@ public class SubredditFragment extends Fragment {
         postList = new ArrayList<JSONObject>();
         String inputPage = currentPage + order + "/.json";
         getPosts(inputPage);
-        setupRecyvlerView(myView);
+        setupRecyclerView(myView);
         return myView;
     }
 
-    public void setupRecyvlerView(View mainView) {
+    public void setupRecyclerView(View mainView) {
         myRecyclerView = (RecyclerView) mainView.findViewById(R.id.my_recylcer_view);
+
+        final RecyclerView.LayoutManager myLayoutManager = new LinearLayoutManager(this.getActivity());
 
         //Use a linear layout manager
         myRecyclerView.setLayoutManager(myLayoutManager);
@@ -74,7 +76,6 @@ public class SubredditFragment extends Fragment {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-
             }
 
             @Override
@@ -87,7 +88,7 @@ public class SubredditFragment extends Fragment {
                 Log.v("Current Position", Integer.toString(currentPosition));
                 Log.v("Loading", Boolean.toString(loading));
 
-                if(!loading && (length - currentPosition) < 5) {
+                if (!loading && (length - currentPosition) < 5) {
                     String inputPage = currentPage + order + "/.json?count=25&after=" + lastPost;
                     loading = true;
                     getPosts(inputPage);
@@ -97,7 +98,25 @@ public class SubredditFragment extends Fragment {
 
         //Specify an Adapter
         myAdapter = new CardViewAdapter(postList, this.getActivity());
+        myAdapter.setOnItemClickListener(new CardViewAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(JSONObject object) {
+                try {
+                    String domain = object.getString("domain");
+                    String url = object.getString("url");
+                    ((MainActivity) getActivity()).openPost(domain, url);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
         myRecyclerView.setAdapter(myAdapter);
+    }
+
+    public void onBackPressed()
+    {
+        FragmentManager f = getActivity().getSupportFragmentManager();
+        f.popBackStack();
     }
 
     public void refreshList() {
